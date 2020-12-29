@@ -13,78 +13,76 @@ import java.io.Serializable;
 @Entity
 @Table(name = "USERS", schema = "public")
 @NamedQueries({
-        @NamedQuery(name = "userByEmail", query = "select u from UserEntity u where u.email = :email")
+        @NamedQuery(name = "userByUuid", query = "select u from UserEntity u where u.uuid = :uuid"),
+        @NamedQuery(name = "userByUserName", query = "select u from UserEntity u where u.userName =:username")
 })
 public class UserEntity implements Serializable {
 
     @Id
     @Column(name = "ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Integer id;
 
     @Column(name = "UUID")
-    @Size(max = 200)
+    @Size(max = 64)
     private String uuid;
 
-    @Column(name = "first_name")
+    @Column(name = "FIRSTNAME")
     @NotNull
-    @Size(max = 30)
+    @Size(max = 200)
     private String firstName;
 
-    @Column(name = "last_name")
+    @Column(name = "LASTNAME")
     @NotNull
-    @Size(max = 30)
+    @Size(max = 200)
     private String lastName;
 
-    @Column(name = "user_name")
+    @Column(name = "USERNAME")
     @NotNull
-    @Size(max = 30)
+    @Size(max = 200)
     private String userName;
 
-    @Column(name = "email")
+    @Column(name = "EMAIL")
     @NotNull
-    @Size(max = 50)
+    @Size(max = 200)
     private String email;
 
-    @Column(name = "password")
-    @NotNull
-    @Size(max = 255)
+    //@ToStringExclude
+    @Column(name = "PASSWORD")
     private String password;
-
-
-    @Column(name = "country")
-    @NotNull
-    @Size(max = 30)
-    private String country;
-
-    @Column(name = "about_me")
-    @Size(max = 50)
-    private String aboutMe;
-
-    @Column(name = "dob")
-    @NotNull
-    @Size(max = 30)
-    private String dob;
-
-    @Column(name = "contact_number")
-    @NotNull
-    @Size(max = 30)
-    private String contactNumber;
-
-    @Column(name = "ROLE")
-    private String role;
 
     @Column(name = "SALT")
     @NotNull
     @Size(max = 200)
+    //@ToStringExclude
     private String salt;
 
+    @Column(name = "COUNTRY")
+    @Size(max = 200)
+    private String country;
 
-    public long getId() {
+    @Column(name = "ABOUTME")
+    @Size(max = 200)
+    private String aboutMe;
+
+    @Column(name = "DOB")
+    @Size(max = 200)
+    private String dob;
+
+    @Column(name = "ROLE")
+    @Size(max = 200)
+    private String role;
+
+    @Column(name = "CONTACTNUMBER")
+    @Size(max = 50)
+    private String contactNumber;
+
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -187,6 +185,9 @@ public class UserEntity implements Serializable {
     public void setSalt(String salt) {
         this.salt = salt;
     }
+
+
+
 
     @Override
     public boolean equals(Object obj) {
