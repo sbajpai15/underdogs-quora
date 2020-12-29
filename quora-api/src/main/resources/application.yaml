@@ -19,4 +19,4 @@ spring:
       hibernate:
         temp:
           use_jdbc_metadata_defaults: false
-    database-platform: org.hibernate.dialect.PostgreSQL9Dialectc
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect

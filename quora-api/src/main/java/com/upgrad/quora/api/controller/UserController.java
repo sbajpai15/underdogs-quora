@@ -1,5 +1,9 @@
 package com.upgrad.quora.api.controller;
 
+import com.upgrad.quora.api.model.SignupUserRequest;
+import com.upgrad.quora.api.model.SignupUserResponse;
+import com.upgrad.quora.service.business.SignupBusinessService;
+import com.upgrad.quora.service.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,9 +29,13 @@ public class UserController {
         userEntity.setUuid(UUID.randomUUID().toString());
         userEntity.setFirstName(signupUserRequest.getFirstName());
         userEntity.setLastName(signupUserRequest.getLastName());
+        userEntity.setUserName(signupUserRequest.getUserName());
         userEntity.setEmail(signupUserRequest.getEmailAddress());
         userEntity.setPassword(signupUserRequest.getPassword());
-        userEntity.setMobilePhone(signupUserRequest.getMobileNumber());
+        userEntity.setCountry(signupUserRequest.getCountry());
+        userEntity.setAboutMe(signupUserRequest.getAboutMe());
+        userEntity.setDob(signupUserRequest.getDob());
+        userEntity.setContactNumber(signupUserRequest.getContactNumber());
         userEntity.setSalt("1234abc");
         userEntity.setRole("nonadmin");
 
