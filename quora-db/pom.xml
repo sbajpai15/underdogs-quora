@@ -78,10 +78,10 @@
                 </dependencies>
 
                 <configuration>
-                    <driver>${postgresql.driver.name}</driver>
-                    <url>jdbc:postgresql://${server.host}:${server.port}/${database.name}</url>
-                    <username>${database.user}</username>
-                    <password>${database.password}</password>
+                    <driver>org.postgresql.Driver</driver>
+                    <url>jdbc:postgresql://localhost:5432/postgres</url>
+                    <username>postgres</username>
+                    <password>@Superf6</password>
                     <autocommit>true</autocommit>
                     <onError>abort</onError>
                 </configuration>
