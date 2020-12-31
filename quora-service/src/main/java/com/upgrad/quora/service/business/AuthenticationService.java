@@ -27,7 +27,7 @@ public class AuthenticationService {
         //calls User DAO to get user entity fo the given user entity if it exists
         UserEntity userEntity = userDao.getUserByUserName(username);
         if (userEntity == null) {
-            throw new AuthenticationFailedException("ATH-001", "User with username not found");
+            throw new AuthenticationFailedException("ATH-001", "This username does not exist");
         }
 
         final String encryptedPassword = CryptographyProvider.encrypt(password, userEntity.getSalt());

@@ -24,6 +24,7 @@ public class SignoutResponse   {
 
   public SignoutResponse id(String id) {
     this.id = id;
+    this.message = "SIGNED OUT SUCCESSFULLY";
     return this;
   }
 
