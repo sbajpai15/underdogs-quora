@@ -11,6 +11,7 @@ import com.upgrad.quora.service.entity.UserAuthTokenEntity;
 import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.AuthenticationFailedException;
 import com.upgrad.quora.service.exception.SignOutRestrictedException;
+import com.upgrad.quora.service.exception.SignUpRestrictedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -31,8 +32,8 @@ public class UserController {
     @Autowired
     private SignupBusinessService signupBusinessService;
 
-    @RequestMapping(method = RequestMethod.POST, path = "/usersignup", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<SignupUserResponse> userSignup(final SignupUserRequest signupUserRequest) {
+    @RequestMapping(method = RequestMethod.POST, path = "/user/signup", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<SignupUserResponse> userSignup(final SignupUserRequest signupUserRequest) throws SignUpRestrictedException {
 
         final UserEntity userEntity = new UserEntity();
 
@@ -51,18 +52,28 @@ public class UserController {
 
         final UserEntity createdUserEntity = signupBusinessService.signup(userEntity);
         SignupUserResponse userResponse = new SignupUserResponse().id(createdUserEntity.getUuid()).status("USER SUCCESSFULLY REGISTERED");
+        if(userResponse == null){
+            throw new SignUpRestrictedException("SGR-003", "Incomplete or incorrect data");
+        }
         return new ResponseEntity<SignupUserResponse>(userResponse, HttpStatus.CREATED);
     }
 
     @Autowired
     private AuthenticationService authenticationService;
 
-    @RequestMapping(method = RequestMethod.POST, path = "/auth/login", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(method = RequestMethod.POST, path = "/user/signin", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SigninResponse> login(@RequestHeader("authorization") final String authorization) throws AuthenticationFailedException {
-        byte[] decode = Base64.getDecoder().decode(authorization);
+        byte[] decode;
+        try {
+            decode = Base64.getDecoder().decode(authorization.split("Basic ")[1]);
+
+        }
+        catch (Exception authStringException){
+            throw new AuthenticationFailedException("ATH-003", "incorrect authorisation format");
+        }
+
         String decodedText = new String(decode);
         String[] decodedArray = decodedText.split(":");
-
         //authentication service does authentication based on username and password. Authentication service in-turn calls UserDao to create auth token
         UserAuthTokenEntity userAuthToken = authenticationService.authenticate(decodedArray[0], decodedArray[1]);
 
@@ -73,16 +84,15 @@ public class UserController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("access-token", userAuthToken.getAccessToken());
         return new ResponseEntity<SigninResponse>(authorizedUserResponse, headers, HttpStatus.OK);
+
+
+
     }
 
     @Autowired
     private SignoutService signoutService;
-    @RequestMapping(method = RequestMethod.POST, path = "/logout", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(method = RequestMethod.POST, path = "/user/signout", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SignoutResponse> logout(@RequestHeader("authorization") final String accessToken) throws SignOutRestrictedException {
-        //decoding the auth token
-       // byte[] decode = Base64.getDecoder().decode(accessToken);
-        //decoded auth token
-       // String decodedText = new String(decode);
 
         //signout using JWT
         UserAuthTokenEntity userAuthToken = signoutService.signout(accessToken);

@@ -24,6 +24,7 @@ public class SigninResponse   {
 
   public SigninResponse id(String id) {
     this.id = id;
+    this.message = "SIGNED IN SUCCESSFULLY";
     return this;
   }
 
